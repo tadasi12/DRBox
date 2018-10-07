@@ -35,7 +35,7 @@ RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/tadasi12/DRBox.git . 
     sed -i -e 's/add_subdirectory(examples)//g' ./CMakeLists.txt && \
 	sed -i -e 's/CXXFLAGS += -fopenmp/#CXXFLAGS += -fopenmp/g' ./Makefile && \
     sed -i -e 's/#pragma omp parallel for//g' ./src/caffe/util/rbox_util.cpp && \
-    ADD ./examples examples && \
+#    ADD ./examples examples && \
     mkdir build && cd build && \ 
     cmake -DCPU_ONLY=1 .. && \
     make -j"$(nproc)"
