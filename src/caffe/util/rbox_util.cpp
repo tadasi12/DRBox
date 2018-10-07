@@ -2016,7 +2016,6 @@ void DecodeRBoxesAll(const vector<LabelRBox>& all_loc_preds,
 	CHECK_EQ(all_loc_preds.size(), num);
 	all_decode_rboxes->clear();
 	all_decode_rboxes->resize(num);
-	omp_set_num_threads(16);
 
 	for (int i = 0; i < num; ++i) {
 		// Decode predictions into rboxes.
