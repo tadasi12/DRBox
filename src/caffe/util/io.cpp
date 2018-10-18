@@ -408,7 +408,7 @@ bool ReadJSONToAnnotatedDatum(const string& labelfile, const int img_height,
     const int img_width, const std::map<string, int>& name_to_label,
     AnnotatedDatum* anno_datum) {
   ptree pt;
-  read_json(labelfile, pt);
+  //read_json(labelfile, pt);
 
   // Get image info.
   int width = 0, height = 0;
