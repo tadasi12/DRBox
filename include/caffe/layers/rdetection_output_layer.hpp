@@ -1,7 +1,7 @@
 #ifndef CAFFE_RDETECTION_OUTPUT_LAYER_HPP_
 #define CAFFE_RDETECTION_OUTPUT_LAYER_HPP_
 
-#include <boost/property_tree/json_parser.hpp>
+//#include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/regex.hpp>
 
