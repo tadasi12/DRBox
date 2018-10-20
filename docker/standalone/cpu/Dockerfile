@@ -31,7 +31,7 @@ ENV CLONE_TAG=master
 
 #RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
 RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/tadasi12/DRBox.git . && \
-#    for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
+    for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
     sed -i -e 's/add_subdirectory(examples)//g' ./CMakeLists.txt && \
 	sed -i -e 's/CXXFLAGS += -fopenmp/#CXXFLAGS += -fopenmp/g' ./Makefile && \
     sed -i -e 's/#pragma omp parallel for//g' ./src/caffe/util/rbox_util.cpp && \
