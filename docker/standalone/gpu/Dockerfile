@@ -1,4 +1,5 @@
-FROM nvidia/cuda:7.5-cudnn5-devel-ubuntu14.04
+#FROM nvidia/cuda:7.5-cudnn5-devel-ubuntu14.04
+FROM nvidia/cuda:8.0-cudnn7-devel-ubuntu14.04
 MAINTAINER caffe-maint@googlegroups.com
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -29,8 +30,12 @@ WORKDIR $CAFFE_ROOT
 # FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
 ENV CLONE_TAG=master
 
-RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
+#RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
+RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/tadasi12/DRBox.git . && \
     for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
+    sed -i -e 's/add_subdirectory(examples)//g' ./CMakeLists.txt && \
+    sed -i -e 's/CXXFLAGS += -fopenmp/#CXXFLAGS += -fopenmp/g' ./Makefile && \
+    sed -i -e 's/#pragma omp parallel for//g' ./src/caffe/util/rbox_util.cpp && \
     mkdir build && cd build && \
     cmake -DUSE_CUDNN=1 .. && \
     make -j"$(nproc)"
