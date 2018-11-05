@@ -29,9 +29,9 @@ NMS = librbox.NMS_airplane
 NMS.argtypes=(POINTER(c_double),POINTER(c_int),POINTER(c_double),POINTER(c_int),c_double)
 NMS.restype=None
 
-caffe.set_device(1)
-caffe.set_mode_gpu()
-caffemodel = 'RBOX_WHALE_RBOX_300x300_WHALE_VGG_new_iter_140000.caffemodel'
+#caffe.set_device(1)
+caffe.set_mode_cpu()
+caffemodel = 'RBOX_AIRPLANE_RBOX_300x300_AIRPLANE_VGG_iter_140000.caffemodel'
 deploy = 'deploy.prototxt'
 net = caffe.Net(deploy,caffemodel,caffe.TEST)
 
@@ -209,9 +209,11 @@ def training():
   # print('classification time: %f s' % (end-start))
   # print('Total inner time: %f s' % time_spent)
 
-path = '/tmp/image/'
-save_path = '/tmp/result/'
+
+path = '/e/tmp/Airplane/train_data/'
+save_path = '/e/tmp/Airplane/crop/'
 rate = 0
+
 
 def expand_square(img, background_color):
     w, h = img.size
@@ -225,35 +227,36 @@ def expand_square(img, background_color):
     return result
 
 
-
 def crop_image(loc_c, score_c, indices_c, num_preds, file):
   filename = os.path.basename(file)
-  _, ext = os.path.splitext(file)
+  name, ext = os.path.splitext(filename)
   print(filename)
   img = Image.open(file)
   img = expand_square(img,(0,0,0))
 
   result = True 
   for i in range(num_preds.value):
-    filename_tmp = filename.replace(ext,'') + '_' + str('{0:02d}'.format(i+1)) +ext
+    filename_tmp = name+'_'+str('{0:02d}'.format(i+1))+ext
     index = indices_c[i]
     cx, cy, w, h, angle = loc_c[5*index]*rate,loc_c[5*index+1]*rate,loc_c[5*index+2]*rate,loc_c[5*index+3]*rate,loc_c[5*index+4]
     img_copy = img_clip_r(img,angle,cx,cy,w,h)
     print('{} {} {} {} {}'.format(cx,cy,w,h,angle)) 
-    img_copy.save(save_path+'crop/'+filename_tmp,quality=95)
+    img_copy.save(save_path+''+filename_tmp,quality=95)
 
   if num_preds.value==0:
   	with open(save_path+'not_contained.txt', mode='a') as f:
             f.write(file + '\n')
+
 
 def img_clip_r(img, angle, cx, cy, w, h):
     img = img.rotate(-angle,center=(cx, cy))
     x, y = cx-w/2,cy-h/2
     return img.crop((x, y, x+w,y+h))
 
-list1 = glob.glob(path +'*/*.JPG') 
-croped_file = [re.sub(r'_[0-9]{2}.JPG', '', os.path.basename(f)+'.JPG') for f in glob.glob(save_path + 'crop/*.*')]
-croped_path = [glob.glob(path +'*/'+ f) for f in croped_file][0]
+
+list1 = glob.glob(path +'*.tif') 
+croped_file = [re.sub(r'_[0-9]{2}.tif', '', os.path.basename(f)+'.tif') for f in glob.glob(save_path + '*.*')]
+croped_path = [glob.glob(path + f) for f in croped_file][0]
 list2 = list(set(list1) - set(croped_path)) 
 if os.path.isfile(path):
   with open(save_path + 'not_contained.txt','r') as f:
